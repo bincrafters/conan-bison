@@ -5,7 +5,7 @@ import os
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
 
 
-class LibnameConan(ConanFile):
+class BisonConan(ConanFile):
     name = "bison"
     version = "3.0.4"
     url = "https://github.com/bincrafters/conan-bison"
