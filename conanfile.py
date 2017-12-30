@@ -25,6 +25,7 @@ class BisonConan(ConanFile):
     def configure(self):
         if self.settings.os == "Windows":
             raise Exception("Bison is not supported on Windows.")
+        del self.settings.compiler.libcxx
 
     def build(self):
         env_build = AutoToolsBuildEnvironment(self)
