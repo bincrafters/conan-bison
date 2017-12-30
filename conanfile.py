@@ -29,6 +29,7 @@ class BisonConan(ConanFile):
 
     def build(self):
         env_build = AutoToolsBuildEnvironment(self)
+        env_build.fpic = True
         configure_args = ['--prefix=%s' % self.package_folder]
         with tools.chdir("sources"):
             env_build.configure(args=configure_args)
