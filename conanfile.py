@@ -31,8 +31,6 @@ class BisonConan(ConanFile):
         env_build = AutoToolsBuildEnvironment(self)
         env_build.fpic = True
         configure_args = ['--prefix=%s' % self.package_folder]
-        if self.settings.os == "Macos" and float(self.settings.compiler.version.value) >= 9.1:
-            configure_args.append('-mmacosx-version-min={}'.format(self.settings.compiler.version))
         with tools.chdir("sources"):
             env_build.configure(args=configure_args)
             env_build.make(args=["all"])
