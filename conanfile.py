@@ -14,6 +14,7 @@ class BisonConan(ConanFile):
     license = "https://git.savannah.gnu.org/cgit/bison.git/tree/COPYING"
     authors = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
+    exports_sources = ["secure_snprintf.patch"]
     settings = "os", "arch", "compiler", "build_type"
 
     def source(self):
@@ -28,6 +29,8 @@ class BisonConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def build(self):
+        if self.settings.os == "Macos" and float(self.settings.compiler.version.value) >= 9.1:
+            tools.patch(base_path="sources", patch_file="secure_snprintf.patch")
         env_build = AutoToolsBuildEnvironment(self)
         env_build.fpic = True
         configure_args = ['--prefix=%s' % self.package_folder]
