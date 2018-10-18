@@ -11,7 +11,7 @@ class BisonConan(ConanFile):
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
-    license = "https://git.savannah.gnu.org/cgit/bison.git/tree/COPYING"
+    license = "GPL-3.0-or-later"
     authors = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
     exports_sources = ["secure_snprintf.patch"]
