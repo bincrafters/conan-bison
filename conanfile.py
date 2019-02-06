@@ -7,7 +7,7 @@ from conans import ConanFile, AutoToolsBuildEnvironment, tools
 
 class BisonConan(ConanFile):
     name = "bison"
-    version = "3.0.4"
+    version = "3.0.5"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
