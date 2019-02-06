@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from conans.errors import ConanInvalidConfiguration
 import os
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
 
@@ -25,7 +26,7 @@ class BisonConan(ConanFile):
 
     def configure(self):
         if self.settings.os == "Windows":
-            raise Exception("Bison is not supported on Windows.")
+            raise ConanInvalidConfiguration("Bison is not supported on Windows.")
         del self.settings.compiler.libcxx
 
     def build(self):
