@@ -8,48 +8,76 @@ linux: &linux
 osx: &osx
    os: osx
    language: generic
-matrix:
-   include:
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=conanio/gcc49
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
-      - <<: *linux
-        env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=3.9 CONAN_DOCKER_IMAGE=conanio/clang39
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=4.0 CONAN_DOCKER_IMAGE=conanio/clang40
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
-      - <<: *linux
-        env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
-      - <<: *osx
-        osx_image: xcode7.3
-        env: CONAN_APPLE_CLANG_VERSIONS=7.3
-      - <<: *osx
-        osx_image: xcode8.3
-        env: CONAN_APPLE_CLANG_VERSIONS=8.1
-      - <<: *osx
-        osx_image: xcode9
-        env: CONAN_APPLE_CLANG_VERSIONS=9.0
-      - <<: *osx
-        osx_image: xcode9.4
-        env: CONAN_APPLE_CLANG_VERSIONS=9.1
-      - <<: *osx
-        osx_image: xcode10.1
-        env: CONAN_APPLE_CLANG_VERSIONS=10.0
 
-install:
-  - chmod +x .ci/install.sh
-  - ./.ci/install.sh
+job_install_script: &install_script
+  install:
+    - chmod +x .ci/install.sh
+    - ./.ci/install.sh
+  script:
+    - chmod +x .ci/run.sh
+    - ./.ci/run.sh
 
-script:
-  - chmod +x .ci/run.sh
-  - ./.ci/run.sh
+jobs:
+  include:
+    - stage: bison_installer
+      <<: *linux
+      env: BUILD_BISON_INSTALLER=1 CONAN_DOCKER_IMAGE=conanio/gcc7-centos6-x86 ARCH=x86
+      <<: *install_script
+    - <<: *linux
+      env: BUILD_BISON_INSTALLER=1 CONAN_DOCKER_IMAGE=conanio/gcc7-centos6 ARCH=x86_64
+      <<: *install_script
+    - <<: *osx
+      osx_image: xcode7.3
+      env: BUILD_BISON_INSTALLER=1
+      <<: *install_script
+    - stage: bison
+      <<: *linux
+      env: CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=conanio/gcc49
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=3.9 CONAN_DOCKER_IMAGE=conanio/clang39
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=4.0 CONAN_DOCKER_IMAGE=conanio/clang40
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
+      <<: *install_script
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+      <<: *install_script
+    - <<: *osx
+      osx_image: xcode7.3
+      env: CONAN_APPLE_CLANG_VERSIONS=7.3
+      <<: *install_script
+    - <<: *osx
+      osx_image: xcode8.3
+      env: CONAN_APPLE_CLANG_VERSIONS=8.1
+      <<: *install_script
+    - <<: *osx
+      osx_image: xcode9
+      env: CONAN_APPLE_CLANG_VERSIONS=9.0
+      <<: *install_script
+    - <<: *osx
+      osx_image: xcode9.4
+      env: CONAN_APPLE_CLANG_VERSIONS=9.1
+      <<: *install_script
+    - <<: *osx
+      osx_image: xcode10.1
+      env: CONAN_APPLE_CLANG_VERSIONS=10.0
+      <<: *install_script
