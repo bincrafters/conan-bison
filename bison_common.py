@@ -26,7 +26,7 @@ def bison_source(conanfile):
     name = "bison"
     filename = "{}-{}.tar.gz".format(name, conanfile.version)
     url = "https://ftp.gnu.org/gnu/{}/{}".format(name, filename)
-    sha256 = "cd399d2bee33afa712bac4b1f4434e20379e9b4099bce47189e09a7675a2d566"
+    sha256 = "0fda1d034185397430eb7b0c9e140fb37e02fbfc53b90252fa5575e382b6dbd1"
 
     dlfilepath = os.path.join(tempfile.gettempdir(), filename)
     if os.path.exists(dlfilepath) and not get_env("BISON_FORCE_DOWNLOAD", False):
@@ -40,9 +40,13 @@ def bison_source(conanfile):
     os.rename(extracted_dir, conanfile._source_subfolder)
 
     # Fix path of bison in yacc script (use environment variable)
-    tools.replace_in_file(os.path.join(conanfile.source_folder, conanfile._source_subfolder, "Makefile.in"),
-                          "echo \"exec '$(bindir)/bison'",
-                          "echo \"exec \"'\"$${}_ROOT/bin/bison\"'\"".format(conanfile.name.upper()))
+    yacc_in = os.path.join(conanfile.source_folder, conanfile._source_subfolder, "src", "yacc.in")
+    tools.replace_in_file(yacc_in,
+                          "@prefix@",
+                          "${}_ROOT".format(conanfile.name.upper()))
+    tools.replace_in_file(yacc_in,
+                          "@bindir@",
+                          "${}_ROOT/bin".format(conanfile.name.upper()))
 
 
 def bison_build(conanfile):
@@ -57,8 +61,9 @@ def bison_package(conanfile):
     with tools.chdir(conanfile.build_folder):
         env_build = AutoToolsBuildEnvironment(conanfile)
         env_build.install()
-    conanfile.copy("COPYING", src=conanfile.source_folder, dst="licenses")
     if conanfile.is_installer:
         shutil.rmtree(os.path.join(conanfile.package_folder, "lib"))
-        
+    conanfile.copy("COPYING", src=os.path.join(conanfile.source_folder, conanfile._source_subfolder), dst="licenses")
+    conanfile.copy("LICENSE.md", src=conanfile.source_folder, dst="licenses")
+
     conanfile.run("strip '{}'".format(os.path.join(conanfile.package_folder, "bin", "bison")))

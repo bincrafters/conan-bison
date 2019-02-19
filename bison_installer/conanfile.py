@@ -8,7 +8,7 @@ import sys
 
 class BisonInstallerConan(ConanFile):
     name = "bison_installer"
-    version = "3.0.5"
+    version = "3.3.2"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
@@ -17,6 +17,7 @@ class BisonInstallerConan(ConanFile):
     exports = ["../LICENSE.md", "../bison_common.py"]
     settings = "os_build", "arch_build", "compiler"
     _source_subfolder = "source_subfolder"
+    no_copy_source = True
 
     is_installer = True
 
@@ -45,7 +46,7 @@ class BisonInstallerConan(ConanFile):
         bison_package(self)
 
     def package_id(self):
-        del self.settings.compiler
+        del self.info.settings.compiler
 
     def package_info(self):
         bindir = os.path.join(self.package_folder, "bin")
