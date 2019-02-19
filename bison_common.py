@@ -60,4 +60,5 @@ def bison_package(conanfile):
     conanfile.copy("COPYING", src=conanfile.source_folder, dst="licenses")
     if conanfile.is_installer:
         shutil.rmtree(os.path.join(conanfile.package_folder, "lib"))
-    conanfile.run("strip '{}'".format(os.path.join(conanfile.package_folder, "bison")))
+        
+    conanfile.run("strip '{}'".format(os.path.join(conanfile.package_folder, "bin", "bison")))
