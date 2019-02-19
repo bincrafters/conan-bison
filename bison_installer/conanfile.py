@@ -25,6 +25,11 @@ class BisonInstallerConan(ConanFile):
         sys.path.append(os.path.dirname(os.path.realpath(__file__)))
         sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
+    def build_requirements(self):
+        self._add_common()
+        from bison_common import bison_build_requirements
+        bison_build_requirements(self)
+
     def source(self):
         self._add_common()
         from bison_common import bison_source

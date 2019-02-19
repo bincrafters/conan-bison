@@ -21,27 +21,32 @@ class BisonConan(ConanFile):
 
     is_installer = False
 
-    @property
-    def _conanfile_dir(self):
-        return os.path.dirname(os.path.realpath(__file__))
+    def _add_common(self):
+        sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
+    def build_requirements(self):
+        self._add_common()
+        from bison_common import bison_build_requirements
+        bison_build_requirements(self)
 
     def source(self):
-        sys.path.append(self._conanfile_dir)
+        self._add_common()
         from bison_common import bison_source
         bison_source(self)
 
     def configure(self):
-        sys.path.append(self._conanfile_dir)
+        self._add_common()
         from bison_common import bison_configure
         bison_configure(self)
 
     def build(self):
-        sys.path.append(self._conanfile_dir)
+        self._add_common()
         from bison_common import bison_build
         bison_build(self)
 
     def package(self):
-        sys.path.append(self._conanfile_dir)
+        self._add_common()
         from bison_common import bison_package
         bison_package(self)
 

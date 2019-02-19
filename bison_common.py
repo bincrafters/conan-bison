@@ -2,8 +2,9 @@
 
 from conans import AutoToolsBuildEnvironment, tools
 from conans.client.tools.oss import detected_os
-from conans.errors import ConanInvalidConfiguration
+from conans.client.tools.win import vcvars
 from conans.util.env_reader import get_env
+from contextlib import contextmanager
 import os
 import shutil
 import tempfile
@@ -16,9 +17,12 @@ def conanfile_os(conanfile):
         return conanfile.settings.os
 
 
+def bison_build_requirements(conanfile):
+    if detected_os() == "Windows":
+        conanfile.build_requires("msys2_installer/latest@bincrafters/stable")
+
+
 def bison_configure(conanfile):
-    if conanfile_os(conanfile) == "Windows":
-        raise ConanInvalidConfiguration("Bison is not supported on Windows.")
     del conanfile.settings.compiler.libcxx
 
 
@@ -49,12 +53,24 @@ def bison_source(conanfile):
                           "${}_ROOT/bin".format(conanfile.name.upper()))
 
 
+@contextmanager
+def create_build_environment(conanfile):
+    if conanfile.settings.compiler == "Visual Studio":
+        with vcvars(conanfile.settings):
+            with tools.environment_append({'LD': "link"}):
+                yield
+    else:
+        yield
+
+
 def bison_build(conanfile):
-    env_build = AutoToolsBuildEnvironment(conanfile)
-    env_build.fpic = True
-    configure_args = []
-    env_build.configure(configure_dir=os.path.join(conanfile.source_folder, conanfile._source_subfolder), args=configure_args)
-    env_build.make()
+    if conanfile.should_build:
+        with create_build_environment(conanfile):
+            env_build = AutoToolsBuildEnvironment(conanfile, win_bash=detected_os() == "Windows")
+            env_build.fpic = True
+            configure_args = []
+            env_build.configure(configure_dir=os.path.join(conanfile.source_folder, conanfile._source_subfolder), args=configure_args)
+            env_build.make()
 
 
 def bison_package(conanfile):
@@ -66,4 +82,5 @@ def bison_package(conanfile):
     conanfile.copy("COPYING", src=os.path.join(conanfile.source_folder, conanfile._source_subfolder), dst="licenses")
     conanfile.copy("LICENSE.md", src=conanfile.source_folder, dst="licenses")
 
-    conanfile.run("strip '{}'".format(os.path.join(conanfile.package_folder, "bin", "bison")))
+    bison_bin = "bison.exe" if conanfile_os(conanfile) == "Windows" else "bison"
+    conanfile.run("strip \"{}\"".format(os.path.join(conanfile.package_folder, "bin", bison_bin)))

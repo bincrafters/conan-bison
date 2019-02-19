@@ -3,6 +3,7 @@
 
 import os
 from conans import ConanFile, CMake
+from conans.client.tools.oss import detected_os
 
 
 class TestPackageConan(ConanFile):
@@ -15,6 +16,8 @@ class TestPackageConan(ConanFile):
         channel = self.requires["bison"].ref.channel
 
         self.build_requires("bison_installer/{}@{}/{}".format(version, user, channel))
+        if detected_os() == "Windows":
+            self.build_requires("msys2_installer/latest@bincrafters/stable")
 
     def build(self):
         cmake = CMake(self)
