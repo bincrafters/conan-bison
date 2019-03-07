@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from conans import ConanFile
@@ -22,33 +21,32 @@ class BisonInstallerConan(ConanFile):
     is_installer = True
 
     def _add_common(self):
-        sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+        curdir = os.path.dirname(os.path.realpath(__file__))
+        pardir = os.path.dirname(curdir)
+        sys.path.insert(0, curdir)
+        sys.path.insert(0, pardir)
+        from bison_common import BisonCommon
+        self._common = BisonCommon(self)
 
     def build_requirements(self):
         self._add_common()
-        from bison_common import bison_build_requirements
-        bison_build_requirements(self)
+        self._common.build_requirements()
 
     def source(self):
         self._add_common()
-        from bison_common import bison_source
-        bison_source(self)
+        self._common.source()
 
     def configure(self):
         self._add_common()
-        from bison_common import bison_configure
-        bison_configure(self)
+        self._common.configure()
 
     def build(self):
         self._add_common()
-        from bison_common import bison_build
-        bison_build(self)
+        self._common.build()
 
     def package(self):
         self._add_common()
-        from bison_common import bison_package
-        bison_package(self)
+        self._common.package()
 
     def package_id(self):
         del self.info.settings.compiler
