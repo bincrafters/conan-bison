@@ -53,6 +53,9 @@ class BisonInstallerConan(ConanFile):
         del self.info.settings.compiler
 
     def package_info(self):
+        self.cpp_info.libs = []
+        self.cpp_info.includedirs = []
+
         bindir = os.path.join(self.package_folder, "bin")
         self.output.info('Appending PATH environment variable: {}'.format(bindir))
         self.env_info.PATH.append(bindir)

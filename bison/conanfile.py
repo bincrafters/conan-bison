@@ -50,6 +50,7 @@ class BisonConan(ConanFile):
         self._common.package()
 
     def package_info(self):
+        self.cpp_info.bindirs = []
         self.cpp_info.libs = tools.collect_libs(self)
 
         self.output.info("Setting BISON_ROOT environment variable: {}".format(self.package_folder))
