@@ -20,6 +20,7 @@ class BisonConan(ConanFile):
 
     is_installer = False
 
+    _common = None
     def _add_common(self):
         curdir = os.path.dirname(os.path.realpath(__file__))
         pardir = os.path.dirname(curdir)
