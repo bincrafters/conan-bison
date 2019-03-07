@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from conans import ConanFile, CMake
-from conans.client.tools.oss import detected_os
+from conans import ConanFile, CMake, tools
 
 
 class TestPackageConan(ConanFile):
@@ -9,7 +8,7 @@ class TestPackageConan(ConanFile):
     generators = "cmake",
 
     def build_requirements(self):
-        if detected_os() == "Windows":
+        if tools.os_info.is_windows:
             self.build_requires("msys2_installer/latest@bincrafters/stable")
 
     def build(self):

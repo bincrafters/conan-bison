@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from conans import AutoToolsBuildEnvironment, tools
-from conans.client.tools.oss import detected_os
-from conans.client.tools.win import vcvars
+from conans.errors import ConanInvalidConfiguration
 from conans.tools import get_env
 from contextlib import contextmanager
 import os
-import shutil
 import tempfile
 
 
@@ -22,11 +20,14 @@ class BisonCommon:
             return self.conanfile.settings.os
 
     def build_requirements(self):
-        if self.os == "Windows":
+        if tools.os_info.is_windows:
             self.conanfile.build_requires("msys2_installer/latest@bincrafters/stable")
 
     def configure(self):
-        del self.conanfile.settings.compiler.libcxx
+        if self.os == "Windows":
+            raise ConanInvalidConfiguration("Flex is not supported on Windows.")
+        if self.conanfile.settings.compiler in ("gcc", "clang", ):
+            del self.conanfile.settings.compiler.libcxx
 
     def source(self):
         name = "bison"
@@ -57,7 +58,7 @@ class BisonCommon:
     @contextmanager
     def create_build_environment(self):
         if self.conanfile.settings.compiler == "Visual Studio":
-            with vcvars(self.conanfile.settings):
+            with tools.vcvars(self.conanfile.settings):
                 with tools.environment_append({'LD': "link"}):
                     yield
         else:
@@ -78,8 +79,7 @@ class BisonCommon:
         with tools.chdir(self.conanfile.build_folder):
             env_build = AutoToolsBuildEnvironment(self.conanfile, win_bash=tools.os_info.is_windows)
             env_build.install()
-        if self.conanfile.is_installer:
-            shutil.rmtree(os.path.join(self.conanfile.package_folder, "lib"))
+
         self.conanfile.copy("COPYING", src=self.configure_dir, dst="licenses")
 
         bison_bin = "bison.exe" if self.os == "Windows" else "bison"
