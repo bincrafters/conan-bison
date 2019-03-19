@@ -16,13 +16,14 @@ class BisonConan(ConanFile):
     authors = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
     settings = "os", "arch", "compiler", "build_type"
+    _source_subfolder = "source_subfolder"
 
     def source(self):
         source_url = "https://ftp.gnu.org/gnu/bison/"
         tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version),
                   sha256="0fda1d034185397430eb7b0c9e140fb37e02fbfc53b90252fa5575e382b6dbd1")
         extracted_dir = self.name + "-" + self.version
-        os.rename(extracted_dir, "sources")
+        os.rename(extracted_dir, self._source_subfolder)
 
     def configure(self):
         if self.settings.os == "Windows":
@@ -33,14 +34,13 @@ class BisonConan(ConanFile):
         env_build = AutoToolsBuildEnvironment(self)
         env_build.fpic = True
         configure_args = ['--prefix=%s' % self.package_folder]
-        with tools.chdir("sources"):
+        with tools.chdir(self._source_subfolder):
             env_build.configure(args=configure_args)
-            env_build.make(args=["all"])
-            env_build.make(args=["install"])
+            env_build.make()
+            env_build.install()
 
     def package(self):
-        with tools.chdir("sources"):
-            self.copy(pattern="COPYING", dst="licenses")
+        self.copy(pattern="COPYING", dst="licenses", src=self._source_subfolder)
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
