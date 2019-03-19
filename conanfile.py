@@ -8,7 +8,7 @@ from conans import ConanFile, AutoToolsBuildEnvironment, tools
 
 class BisonConan(ConanFile):
     name = "bison"
-    version = "3.0.5"
+    version = "3.3.2"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
@@ -19,7 +19,8 @@ class BisonConan(ConanFile):
 
     def source(self):
         source_url = "https://ftp.gnu.org/gnu/bison/"
-        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name,self.version))
+        tools.get("{0}/{1}-{2}.tar.gz".format(source_url, self.name, self.version),
+                  sha256="0fda1d034185397430eb7b0c9e140fb37e02fbfc53b90252fa5575e382b6dbd1")
         extracted_dir = self.name + "-" + self.version
         os.rename(extracted_dir, "sources")
 
