@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# NOTE: this is a temporary shim until new CPT is released with fix for
-# https://github.com/conan-io/conan-package-tools/issues/354
+from bison_base import BisonBase
 
-import os
+class Bison(BisonBase):
+    options = {"fPIC": [True, False]}
+    default_options = {"fPIC": True}
+    settings = "os", "arch", "compiler", "build_type"
+    exports = ["bison_base.py"]
+    name = "bison_installer"
+    version = BisonBase.version
 
-if "BUILD_INSTALLER" in os.environ:
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
 
-    from bison_installer import BisonInstaller
-
-    class ConanBisonInstaller(BisonInstaller):
-        name = "bison_installer"
-        version = BisonInstaller.version
-
-else:
-
-    from bison import Bison
-
-    class ConanBison(Bison):
-        name = "bison"
-        version = Bison.version
+    def package_info(self):
+        self.cpp_info.libs = ["y"]
