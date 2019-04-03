@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from conans.errors import ConanInvalidConfiguration
-import os
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
+import os
+import shutil
 
 
 class BisonBase(ConanFile):
@@ -16,6 +17,17 @@ class BisonBase(ConanFile):
     _source_subfolder = "source_subfolder"
     requires = ("m4_installer/1.4.18@bincrafters/stable",)
 
+    @property
+    def _is_msvc(self):
+        return self.settings.compiler == "Visual Studio"
+
+    def build_requirements(self):
+        if tools.os_info.is_windows:
+            if "CONAN_BASH_PATH" not in os.environ:
+                self.build_requires("msys2_installer/latest@bincrafters/stable")
+        if self._is_msvc:
+            self.build_requires("automake_build_aux/1.16.1@bincrafters/stable")
+
     def source(self):
         source_url = "https://ftp.gnu.org/gnu/bison/"
         tools.get("{0}/{1}-{2}.tar.gz".format(source_url, "bison", self.version),
@@ -24,16 +36,35 @@ class BisonBase(ConanFile):
         os.rename(extracted_dir, self._source_subfolder)
 
     def configure(self):
-        if self.settings.compiler == "Visual Studio":
-            raise ConanInvalidConfiguration("Bison is not supported on Visual Studio.")
         del self.settings.compiler.libcxx
 
     def build(self):
+        with tools.vcvars(self.settings) if self._is_msvc else tools.no_op():
+            self._build_configure()
+
+    def _build_configure(self):
+        args = []
+        if self._is_msvc:
+            for filename in ["compile", "ar-lib"]:
+                shutil.copy(os.path.join(self.deps_cpp_info["automake_build_aux"].rootpath, filename),
+                            os.path.join(self._source_subfolder, "build-aux", filename))
+            args.extend(['CC=$PWD/build-aux/compile cl -nologo',
+                         'CFLAGS=-%s' % self.settings.compiler.runtime,
+                         'LD=link',
+                         'NM=dumpbin -symbols',
+                         'STRIP=:',
+                         'AR=$PWD/build-aux/ar-lib lib',
+                         'RANLIB=:'])
+
         env_build = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
         with tools.chdir(self._source_subfolder):
-            env_build.configure()
+            env_build.configure(args=args)
             env_build.make()
             env_build.install()
+
+        if self._is_msvc:
+            shutil.move(os.path.join(self.package_folder, "lib", "liby.a"),
+                        os.path.join(self.package_folder, "lib", "y.lib"))
 
     def package(self):
         self.copy(pattern="COPYING", dst="licenses", src=self._source_subfolder)

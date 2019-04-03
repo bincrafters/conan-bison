@@ -2,12 +2,13 @@
 
 from bison_base import BisonBase
 
+
 class Bison(BisonBase):
     options = {"fPIC": [True, False]}
     default_options = {"fPIC": True}
     settings = "os", "arch", "compiler", "build_type"
     exports = ["bison_base.py"]
-    name = "bison_installer"
+    name = "bison"
     version = BisonBase.version
 
     def config_options(self):
