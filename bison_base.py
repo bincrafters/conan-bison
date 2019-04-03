@@ -44,10 +44,17 @@ class BisonBase(ConanFile):
 
     def _build_configure(self):
         args = []
+        build = None
+        host = None
         if self._is_msvc:
             for filename in ["compile", "ar-lib"]:
                 shutil.copy(os.path.join(self.deps_cpp_info["automake_build_aux"].rootpath, filename),
                             os.path.join(self._source_subfolder, "build-aux", filename))
+            build = False
+            if self.settings.arch == "x86":
+                host = "i686-w64-mingw32"
+            elif self.settings.arch == "x86_64":
+                host = "x86_64-w64-mingw32"
             args.extend(['CC=$PWD/build-aux/compile cl -nologo',
                          'CFLAGS=-%s' % self.settings.compiler.runtime,
                          'LD=link',
@@ -58,7 +65,7 @@ class BisonBase(ConanFile):
 
         env_build = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
         with tools.chdir(self._source_subfolder):
-            env_build.configure(args=args)
+            env_build.configure(args=args, build=build, host=host)
             env_build.make()
             env_build.install()
 
