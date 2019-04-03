@@ -2,6 +2,7 @@
 
 from conans.errors import ConanInvalidConfiguration
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
+import glob
 import os
 import shutil
 
@@ -14,6 +15,7 @@ class BisonBase(ConanFile):
     license = "GPL-3.0-or-later"
     authors = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
+    exports_sources = ["patches/*.patch"]
     _source_subfolder = "source_subfolder"
     requires = ("m4_installer/1.4.18@bincrafters/stable",)
 
@@ -39,11 +41,14 @@ class BisonBase(ConanFile):
         del self.settings.compiler.libcxx
 
     def build(self):
+        for filename in glob.glob("patches/*.patch"):
+            self.output.info('applying patch "%s"' % filename)
+            tools.patch(base_path=self._source_subfolder, patch_file=filename)
         with tools.vcvars(self.settings) if self._is_msvc else tools.no_op():
             self._build_configure()
 
     def _build_configure(self):
-        args = []
+        args = ["HELP2MAN=/bin/true"]
         build = None
         host = None
         if self._is_msvc:
@@ -65,6 +70,10 @@ class BisonBase(ConanFile):
 
         env_build = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
         with tools.chdir(self._source_subfolder):
+            tools.replace_in_file("Makefile.in",
+                                  "dist_man_MANS = $(top_srcdir)/doc/bison.1",
+                                  "dist_man_MANS =")
+
             env_build.configure(args=args, build=build, host=host)
             env_build.make()
             env_build.install()
