@@ -66,7 +66,8 @@ class BisonBase(ConanFile):
                          'NM=dumpbin -symbols',
                          'STRIP=:',
                          'AR=$PWD/build-aux/ar-lib lib',
-                         'RANLIB=:'])
+                         'RANLIB=:',
+                         "gl_cv_func_printf_directive_n=no"])
 
         env_build = AutoToolsBuildEnvironment(self, win_bash=tools.os_info.is_windows)
         with tools.chdir(self._source_subfolder):
