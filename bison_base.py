@@ -73,6 +73,12 @@ class BisonBase(ConanFile):
             tools.replace_in_file("Makefile.in",
                                   "dist_man_MANS = $(top_srcdir)/doc/bison.1",
                                   "dist_man_MANS =")
+            tools.replace_in_file(os.path.join("src", "yacc.in"),
+                                  "@prefix@",
+                                  "${}_ROOT".format(self.name.upper()))
+            tools.replace_in_file(os.path.join("src", "yacc.in"),
+                                  "@bindir@",
+                                  "${}_ROOT/bin".format(self.name.upper()))
 
             env_build.configure(args=args, build=build, host=host)
             env_build.make()

@@ -21,3 +21,6 @@ class BisonInstaller(BisonBase):
         bindir = os.path.join(self.package_folder, "bin")
         self.output.info('Appending PATH environment variable: {}'.format(bindir))
         self.env_info.PATH.append(bindir)
+
+        self.output.info('Setting BISON_INSTALLER_ROOT environment variable: {}'.format(self.package_folder))
+        self.env_info.BISON_INSTALLER_ROOT = self.package_folder
