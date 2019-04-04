@@ -7,7 +7,7 @@ class Bison(BisonBase):
     options = {"fPIC": [True, False]}
     default_options = {"fPIC": True}
     settings = "os", "arch", "compiler", "build_type"
-    exports = ["bison_base.py"]
+    exports = BisonBase.exports + ["bison_base.py"]
     name = "bison"
     version = BisonBase.version
 

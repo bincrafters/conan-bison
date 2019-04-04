@@ -6,7 +6,7 @@ from bison_base import BisonBase
 
 class BisonInstaller(BisonBase):
     settings = "os_build", "arch_build", "compiler"
-    exports = ["bison_base.py"]
+    exports = BisonBase.exports + ["bison_base.py"]
     name = "bison_installer"
     version = BisonBase.version
     
