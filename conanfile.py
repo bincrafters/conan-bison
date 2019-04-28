@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from bison_base import BisonBase
+from conanfile_base import BisonBase
 
 
 class Bison(BisonBase):
     options = {"fPIC": [True, False]}
     default_options = {"fPIC": True}
     settings = "os", "arch", "compiler", "build_type"
-    exports = BisonBase.exports + ["bison_base.py"]
+    exports = BisonBase.exports + ["conanfile_base.py"]
     name = "bison"
     version = BisonBase.version
 

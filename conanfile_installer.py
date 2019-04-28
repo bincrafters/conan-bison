@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-from bison_base import BisonBase
+from conanfile_base import BisonBase
 
 
 class BisonInstaller(BisonBase):
     settings = "os_build", "arch_build", "compiler"
-    exports = BisonBase.exports + ["bison_base.py"]
+    exports = BisonBase.exports + ["conanfile_base.py"]
     name = "bison_installer"
     version = BisonBase.version
     
