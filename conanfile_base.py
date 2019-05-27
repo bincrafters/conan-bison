@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from conans.errors import ConanInvalidConfiguration
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import glob
 import os
@@ -9,7 +8,7 @@ import shutil
 
 class ConanFileBase(ConanFile):
     _base_name = "bison"
-    version = "3.3.2"
+    version = "3.4.1"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
@@ -35,7 +34,7 @@ class ConanFileBase(ConanFile):
     def source(self):
         source_url = "https://ftp.gnu.org/gnu/bison/"
         tools.get("{0}/{1}-{2}.tar.gz".format(source_url, "bison", self.version),
-                  sha256="0fda1d034185397430eb7b0c9e140fb37e02fbfc53b90252fa5575e382b6dbd1")
+                  sha256="ee1cc06f5e3d8615a5209cefaa2acd3da59b286d4d923cb6db5e6dbfae7a6c11")
         extracted_dir = "bison-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
