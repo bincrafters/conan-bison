@@ -7,7 +7,7 @@ import shutil
 
 
 class BisonBase(ConanFile):
-    version = "3.4"
+    version = "3.4.1"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
@@ -32,7 +32,7 @@ class BisonBase(ConanFile):
     def source(self):
         source_url = "https://ftp.gnu.org/gnu/bison/"
         tools.get("{0}/{1}-{2}.tar.gz".format(source_url, "bison", self.version),
-                  sha256="ee1cc06f5e3d8615a5209cefaa2acd3da59b286d4d923cb6db5e6dbfae7a6c11")
+                  sha256="7007fc89c216fbfaff5525359b02a7e5b612694df5168c74673f67055f015095")
         extracted_dir = "bison-" + self.version
         os.rename(extracted_dir, self._source_subfolder)
 
