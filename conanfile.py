@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from conanfile_base import BisonBase
+from conanfile_base import ConanBase
 
 
-class Bison(BisonBase):
+class ConanDefault(ConanBase):
+    name = ConanBase._base_name
+    version = ConanBase.version
+    exports = ConanBase.exports + ["conanfile_base.py"]
+
+    settings = "os", "arch", "compiler", "build_type"
     options = {"fPIC": [True, False]}
     default_options = {"fPIC": True}
-    settings = "os", "arch", "compiler", "build_type"
-    exports = BisonBase.exports + ["conanfile_base.py"]
-    name = "bison"
-    version = BisonBase.version
 
     def config_options(self):
         if self.settings.os == "Windows":

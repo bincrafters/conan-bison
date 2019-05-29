@@ -6,7 +6,8 @@ import os
 import shutil
 
 
-class BisonBase(ConanFile):
+class ConanBase(ConanFile):
+    _base_name = "bison"
     version = "3.4.1"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
