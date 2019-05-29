@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from conanfile_base import ConanBase
+from conanfile_base import ConanFileBase
 
 
-class ConanDefault(ConanBase):
-    name = ConanBase._base_name
-    version = ConanBase.version
-    exports = ConanBase.exports + ["conanfile_base.py"]
+class ConanFileDefault(ConanFileBase):
+    name = ConanFileBase._base_name
+    version = ConanFileBase.version
+    exports = ConanFileBase.exports + ["conanfile_base.py"]
 
     settings = "os", "arch", "compiler", "build_type"
     options = {"fPIC": [True, False]}
