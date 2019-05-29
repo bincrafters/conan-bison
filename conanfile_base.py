@@ -7,14 +7,15 @@ import os
 import shutil
 
 
-class ConanBase(ConanFile):
+class ConanFileBase(ConanFile):
     _base_name = "bison"
     version = "3.3.2"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
+    topics = ("conan", "bison", "parser")
     license = "GPL-3.0-or-later"
-    authors = "Bincrafters <bincrafters@gmail.com>"
+    author = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
     exports_sources = ["patches/*.patch"]
     _source_subfolder = "source_subfolder"

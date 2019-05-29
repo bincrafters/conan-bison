@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-from conanfile_base import ConanBase
+from conanfile_base import ConanFileBase
 
 
-class ConanInstaller(ConanBase):
-    name = ConanBase._base_name + "_installer"
-    version = ConanBase.version
-    exports = ConanBase.exports + ["conanfile_base.py"]
+class ConanInstaller(ConanFileBase):
+    name = ConanFileBase._base_name + "_installer"
+    version = ConanFileBase.version
+    exports = ConanFileBase.exports + ["conanfile_base.py"]
 
     settings = "os_build", "arch_build", "compiler"
 
