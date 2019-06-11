@@ -50,7 +50,7 @@ class ConanFileBase(ConanFile):
             self._build_configure()
 
     def _build_configure(self):
-        args = ["HELP2MAN=/bin/true"]
+        args = ["HELP2MAN=/bin/true", "--disable-nls"]
         build = None
         host = None
         if self._is_msvc:
