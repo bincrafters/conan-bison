@@ -50,6 +50,7 @@ class ConanFileBase(ConanFile):
 
     def _build_configure(self):
         true = tools.which("true") or "/bin/true"
+        true = tools.unix_path(true) if tools.os_info.is_windows else true
         args = ["HELP2MAN=%s" % true, "MAKEINFO=%s" % true, "--disable-nls"]
         build = None
         host = None
