@@ -43,7 +43,7 @@ class ConanFileBase(ConanFile):
         del self.settings.compiler.libcxx
 
     def build(self):
-        for filename in glob.glob("patches/*.patch"):
+        for filename in sorted(glob.glob("patches/*.patch")):
             self.output.info('applying patch "%s"' % filename)
             tools.patch(base_path=self._source_subfolder, patch_file=filename)
         with tools.vcvars(self.settings) if self._is_msvc else tools.no_op():
