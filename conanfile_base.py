@@ -7,13 +7,15 @@ import os
 import shutil
 
 
-class BisonBase(ConanFile):
+class ConanFileBase(ConanFile):
+    _base_name = "bison"
     version = "3.3.2"
     url = "https://github.com/bincrafters/conan-bison"
     homepage = "https://www.gnu.org/software/bison/"
     description = "Bison is a general-purpose parser generator"
+    topics = ("conan", "bison", "parser")
     license = "GPL-3.0-or-later"
-    authors = "Bincrafters <bincrafters@gmail.com>"
+    author = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
     exports_sources = ["patches/*.patch"]
     _source_subfolder = "source_subfolder"
@@ -41,14 +43,16 @@ class BisonBase(ConanFile):
         del self.settings.compiler.libcxx
 
     def build(self):
-        for filename in glob.glob("patches/*.patch"):
+        for filename in sorted(glob.glob("patches/*.patch")):
             self.output.info('applying patch "%s"' % filename)
             tools.patch(base_path=self._source_subfolder, patch_file=filename)
         with tools.vcvars(self.settings) if self._is_msvc else tools.no_op():
             self._build_configure()
 
     def _build_configure(self):
-        args = ["HELP2MAN=/bin/true"]
+        true = tools.which("true") or "/bin/true"
+        true = tools.unix_path(true) if tools.os_info.is_windows else true
+        args = ["HELP2MAN=%s" % true, "MAKEINFO=%s" % true, "--disable-nls"]
         build = None
         host = None
         if self._is_msvc:
