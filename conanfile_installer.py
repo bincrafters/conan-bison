@@ -12,6 +12,7 @@ class ConanInstaller(ConanFileBase):
     settings = "os_build", "arch_build", "compiler", "arch"
 
     def package_id(self):
+        self.info.include_build_settings()
         del self.info.settings.compiler
         del self.info.settings.arch
 
