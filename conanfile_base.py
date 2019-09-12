@@ -16,7 +16,7 @@ class BisonBase(ConanFile):
     exports = ["LICENSE.md"]
     exports_sources = ["patches/*.patch"]
     _source_subfolder = "source_subfolder"
-    requires = ("m4_installer/1.4.18@bincrafters/stable",)
+    requires = ("m4_installer/1.4.18@bincrafters/stable", "flex_installer/2.6.4@bincrafters/stable")
 
     @property
     def _is_msvc(self):
