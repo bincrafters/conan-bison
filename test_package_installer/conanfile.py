@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 from conans import ConanFile, tools, CMake
 from six import StringIO
@@ -14,7 +11,7 @@ class TestPackageConan(ConanFile):
         if not tools.cross_building(self.settings):
             if tools.os_info.is_windows:
                 if "CONAN_BASH_PATH" not in os.environ:
-                    self.build_requires("msys2_installer/latest@bincrafters/stable")
+                    self.build_requires("msys2/20190524")
 
     def build(self):
         # verify CMake integration
