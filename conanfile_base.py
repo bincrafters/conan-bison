@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from conans.errors import ConanInvalidConfiguration
 from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import glob
@@ -15,7 +13,6 @@ class ConanFileBase(ConanFile):
     description = "Bison is a general-purpose parser generator"
     topics = ("conan", "bison", "parser")
     license = "GPL-3.0-or-later"
-    author = "Bincrafters <bincrafters@gmail.com>"
     exports = ["LICENSE.md"]
     exports_sources = ["patches/*.patch"]
     _source_subfolder = "source_subfolder"
@@ -28,7 +25,7 @@ class ConanFileBase(ConanFile):
     def build_requirements(self):
         if tools.os_info.is_windows:
             if "CONAN_BASH_PATH" not in os.environ:
-                self.build_requires("msys2_installer/latest@bincrafters/stable")
+                self.build_requires("msys2/20190524")
         if self._is_msvc:
             self.build_requires("automake_build_aux/1.16.1@bincrafters/stable")
 
@@ -41,6 +38,7 @@ class ConanFileBase(ConanFile):
 
     def configure(self):
         del self.settings.compiler.libcxx
+        del self.settings.compiler.cppstd
 
     def build(self):
         for filename in sorted(glob.glob("patches/*.patch")):
