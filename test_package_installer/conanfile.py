@@ -9,9 +9,9 @@ class TestPackageConan(ConanFile):
 
     def build_requirements(self):
         if not tools.cross_building(self.settings):
-            if tools.os_info.is_windows:
-                if "CONAN_BASH_PATH" not in os.environ:
-                    self.build_requires("msys2/20190524")
+            if tools.os_info.is_windows and not tools.get_env("CONAN_BASH_PATH") and \
+                    tools.os_info.detect_windows_subsystem() != "msys2":
+                self.build_requires("msys2/20190524")
 
     def build(self):
         # verify CMake integration
@@ -32,9 +32,8 @@ class TestPackageConan(ConanFile):
             # verify bison doesn't have hard-coded paths
             bison = tools.which("bison")
             if tools.which("strings") and tools.which("grep"):
-                output = StringIO()
-                self.run('strings %s | grep "\.bison" | true' % bison, output=output)
-                output = output.getvalue().strip()
+                self.run('strings %s | grep "\.bison" > strings_bison || true' % bison)
+                output = tools.load("strings_bison").strip()
                 if output:
                     raise Exception("bison has hard-coded paths to conan: %s" % output)
             # verify bison works without BISON_PKGDATADIR and M4 environment variables
